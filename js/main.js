@@ -16,9 +16,9 @@ document.addEventListener("DOMContentLoaded", function () {
 let Home   =  document.querySelector('.slit-1');
 let About= document.querySelector('.slite-3');
  let skills=  document.querySelector('.slite-4');
-let Education=    document.querySelector('.slite-6');
-let Projects=    document.querySelector('.slite-7');
-let Contact=    document.querySelector('.slite-8');
+let Education=    document.querySelector('.slite-2');
+let Projects=    document.querySelector('.slite-5');
+let Contact=    document.querySelector('.slite-6');
 
 
 let AllLinks = document.querySelectorAll('.links  a ');
@@ -63,3 +63,54 @@ document.querySelectorAll('nav a').forEach(anchor => {
     });
 });
 // Add smooth scrolling to all links
+
+
+
+
+// api
+
+const form = document.getElementById('form');
+const result = document.getElementById('result');
+
+form.addEventListener('submit', function(e) {
+    const formData = new FormData(form);
+    e.preventDefault();
+
+    const object = Object.fromEntries(formData);
+    const json = JSON.stringify(object);
+
+    result.innerHTML = "Please wait..."
+
+    fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: json
+        })
+        .then(async (response) => {
+          let json = await response.json();
+          if (response.status == 200) {
+            result.innerHTML = json.message;
+            result.classList.remove("text-gray-500");
+            result.classList.add("text-green-500");
+          } else {
+            console.log(response);
+            result.innerHTML = json.message;
+            result.classList.remove("text-gray-500");
+            result.classList.add("text-red-500");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          result.innerHTML = "Something went wrong!";
+        })
+        .then(function() {
+            form.reset();
+            setTimeout(() => {
+                result.style.display = "none";
+            }, 3000);
+        });
+});
+
